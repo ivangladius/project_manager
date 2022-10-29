@@ -4,6 +4,24 @@
 use strict;
 use warnings;
 
+use Switch;
+
+my $helper_text = "Please use one of the following options: \n\n
+
+project add
+project del\n\n";
+
+sub main {
+
+    my $action = $_[0];
+
+    switch ($action) {
+        case "add" { add_project(); }
+        case "del" { del_project(); }
+        else { print $helper_text;exit(0); }
+    }
+}
+
 sub add_to_project_config {
     my $project_path = $_[0];
     my $project_config_path = "$ENV{HOME}/.projects";
@@ -46,10 +64,4 @@ sub add_project {
 
 }
 
-add_project();
-
-system("cat ~/.projects");
-
-
-
-
+main($ARGV[0]);
