@@ -1,24 +1,32 @@
 #!/usr/bin/perl
 
 
-use strict;
+#use strict;
 use warnings;
 
-use Switch;
+use Fcntl;
 
 my $helper_text = "Please use one of the following options: \n\n
 
 project add
 project del\n\n";
 
+sub list_project {
+    print "Projects: \n\n";
+    system("cat $ENV{HOME}/.projects");
+    print "\n";
+}
+
 sub main {
 
     my $action = $_[0];
 
-    switch ($action) {
-        case "add" { add_project(); }
-        case "del" { del_project(); }
-        else { print $helper_text;exit(0); }
+    if ("$action" eq "add") {
+        add_project();
+    } elsif ("$action" eq "del" ) {
+        del_project();
+    } elsif ("$action" eq "list" ) {
+        list_project();
     }
 }
 
@@ -62,6 +70,27 @@ sub add_project {
         print "\nproject $project_name created!\n";
     }
 
+}
+
+sub del_project {
+
+    my $to_delete = `cat $ENV{HOME}/.projects | fzf --height 40%`;
+
+	open(FH, "+<$ENV{HOME}/.projects") or die $!;
+
+    my $buffer = "";
+
+    while (<FH>) {
+        $buffer .= $_ if ($_ ne "$to_delete");
+    }
+
+	open(FH, ">$ENV{HOME}/.projects") or die $!;
+
+    print FH $buffer;
+
+    print $buffer;
+
+    close(FH);
 }
 
 main($ARGV[0]);
