@@ -8,26 +8,16 @@ use Fcntl;
 
 my $helper_text = "Please use one of the following options: \n\n
 
+project cd
+project list
 project add
 project del\n\n";
+
 
 sub list_project {
     print "Projects: \n\n";
     system("cat $ENV{HOME}/.projects");
     print "\n";
-}
-
-sub main {
-
-    my $action = $_[0];
-
-    if ("$action" eq "add") {
-        add_project();
-    } elsif ("$action" eq "del" ) {
-        del_project();
-    } elsif ("$action" eq "list" ) {
-        list_project();
-    }
 }
 
 sub add_to_project_config {
@@ -93,4 +83,7 @@ sub del_project {
     close(FH);
 }
 
-main($ARGV[0]);
+sub cd_project {
+    return chomp(my $target_cd= `cat $ENV{HOME}/.projects | fzf --height 40%`);
+
+}
